@@ -48,7 +48,7 @@ async def query(
 
 @router.get(
     path="/{id}",
-    summary="Consultar uma categoria por ID",
+    summary="Consultar uma categoria pelo ID",
     status_code=status.HTTP_200_OK,
     response_model=CategoriaOut,
 )
