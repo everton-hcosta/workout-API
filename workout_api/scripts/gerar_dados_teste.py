@@ -1,5 +1,3 @@
-# scripts/popular_atletas.py
-
 import asyncio
 from datetime import datetime, timezone
 from uuid import uuid4
@@ -13,31 +11,30 @@ from workout_api.centro_treinamento.models import CentroTreinamentoModel
 from workout_api.configs.database import get_session
 
 
-class ProvedorLimitador(BaseProvider):
-    def limitador(self, nome_campo: str, tamanho_maximo: int) -> str:
+class ProvedorDeCampoLimitado(BaseProvider):
+    def limitador(self, nome_do_campo: str, tamanho_maximo: int):
         """
-        Gera um valor do campo `nome_campo` (ex: 'name', 'unique.word')
-        com no máximo `tamanho_maximo` caracteres.
+        Gera um valor para o campo `nome_do_campo` com no máximo `tamanho_maximo` caracteres.
         """
-        # Suporte a campos aninhados como 'unique.word' ou 'random_element'
-        partes = nome_campo.split(".")
-        gerador = self.generator
-        for parte in partes:
-            if not hasattr(gerador, parte):
-                raise ValueError(f"O campo '{nome_campo}' é inválido.")
-            gerador = getattr(gerador, parte)
+        # Garante que o campo exista no Faker
+        if not hasattr(self.generator, nome_do_campo):
+            raise ValueError(f"'{nome_do_campo}' não é um campo válido do Faker.")
 
-        # Gera o valor e ajusta quebras de linha
-        valor = str(gerador()).replace("\n", ", ")
+        # Chama o método correspondente do campo
+        valor_bruto = getattr(self.generator, nome_do_campo)()
+
+        # Substitui quebras de linha por vírgula e espaço
+        valor = str(valor_bruto).replace("\n", ", ")
 
         if len(valor) <= tamanho_maximo:
             return valor
 
+        # Tenta cortar no último espaço antes do limite
         return valor[:tamanho_maximo].rsplit(" ", 1)[0]
 
 
 fake = Faker("pt_BR")
-fake.add_provider(ProvedorLimitador)
+fake.add_provider(ProvedorDeCampoLimitado)
 
 NUM_ATLETAS = 1000
 NUM_CATEGORIAS = 10
@@ -49,7 +46,7 @@ async def main():
         # Criar categorias
         categorias = []
         for _ in range(NUM_CATEGORIAS):
-            nome_categoria = fake.limitador("unique.word").capitalize()
+            nome_categoria = fake.unique.limitador("word", 50).capitalize()
             categoria = CategoriaModel(nome=nome_categoria)
             session.add(categoria)
             categorias.append(categoria)
@@ -57,9 +54,9 @@ async def main():
         # Criar centros de treinamento
         centros = []
         for _ in range(NUM_CTS):
-            nome_ct = f"CT {fake.limitador('unique.last_name').capitalize()}"
-            endereco = fake.address().replace("\n", ", ")
-            proprietario = fake.name()
+            nome_ct = f"CT {fake.unique.limitador("last_name", 50).capitalize()}"
+            endereco = fake.limitador("address", 60).replace("\n", ", ")
+            proprietario = fake.limitador("name", 30).capitalize()
             centro = CentroTreinamentoModel(
                 nome=nome_ct, endereco=endereco, proprietario=proprietario
             )
@@ -70,8 +67,8 @@ async def main():
 
         # Criar atletas
         for _ in range(NUM_ATLETAS):
-            nome = fake.name()
-            cpf = fake.unique.ssn().replace(".", "").replace("-", "")
+            nome = fake.limitador("name", 50).capitalize()
+            cpf = fake.unique.limitador("ssn", 11).replace(".", "").replace("-", "")
             idade = fake.random_int(min=15, max=90)
             peso = round(fake.random_number(digits=2) + fake.random.random(), 1)
             altura = round(fake.random.uniform(1.50, 2.00), 2)

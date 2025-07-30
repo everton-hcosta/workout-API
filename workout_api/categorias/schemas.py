@@ -8,7 +8,7 @@ from workout_api.contrib.schemas import BaseSchema
 class CategoriaIn(BaseSchema):
     model_config = ConfigDict(from_attributes=True)
     nome: Annotated[
-        str, Field(description="Nome da categoria", example="Scale", max_length=10)
+        str, Field(description="Nome da categoria", example="Scale", max_length=50)
     ]
 
 
