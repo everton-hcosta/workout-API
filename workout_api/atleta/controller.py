@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import uuid4
 
-from fastapi import APIRouter, Body, HTTPException, status
+from fastapi import APIRouter, Body, HTTPException, Query, status
 from pydantic import UUID4
+from sqlalchemy import func
 from sqlalchemy.future import select
 
 from workout_api.atleta.models import AtletaModel
@@ -56,7 +57,7 @@ async def post(db_session: DatabaseDependency, atleta_in: AtletaIn = Body(...)):
 
     try:
         atleta_out = AtletaOut(
-            id=uuid4(), created_at=datetime.utcnow(), **atleta_in.model_dump()
+            id=uuid4(), created_at=datetime.now(timezone.utc), **atleta_in.model_dump()
         )
 
         atleta_model = AtletaModel(
@@ -84,10 +85,29 @@ async def post(db_session: DatabaseDependency, atleta_in: AtletaIn = Body(...)):
 )
 async def query(
     db_session: DatabaseDependency,
+    nome: str | None = Query(default=None, description="Filtrar pelo nome"),
+    cpf: str | None = Query(default=None, description="Filtrar pelo CPF"),
+    limit: int = Query(default=100, ge=1, le=1000, description="Limite de resultados"),
+    offset: int = Query(default=0, ge=0, description="Deslocamento para paginação"),
 ) -> list[AtletaOut]:
-    atletas: list[AtletaModel] = (
-        (await db_session.execute(select(AtletaModel))).scalars().all()
-    )
+    stmt = select(AtletaModel)
+
+    if nome:
+        stmt = stmt.where(func.unaccent(AtletaModel.nome).ilike(f"%{nome}%"))
+    if cpf:
+        cpf = cpf.replace(".", "").replace("-", "")
+        stmt = stmt.where(AtletaModel.cpf.ilike(f"%{cpf}%"))
+
+    stmt = stmt.offset(offset).limit(limit).order_by(AtletaModel.nome)
+
+    result = await db_session.execute(stmt)
+    atletas = result.scalars().all()
+
+    if not atletas:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Nenhum atleta encontrado.",
+        )
 
     return [AtletaOut.model_validate(atleta) for atleta in atletas]
 

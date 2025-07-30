@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -16,7 +16,11 @@ class AtletaModel(BaseModel):
     peso: Mapped[float] = mapped_column(Float, nullable=False)
     altura: Mapped[float] = mapped_column(Float, nullable=False)
     sexo: Mapped[str] = mapped_column(String(1), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),  # adiciona suporte a timezone
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),  # valor timezone-aware
+    )
     categoria: Mapped["CategoriaModel"] = relationship(
         back_populates="atleta", lazy="selectin"
     )
