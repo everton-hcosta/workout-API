@@ -48,21 +48,23 @@ make run
 
 Acesse em: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-## Funcionalidades
+## Funcionalidade
 
-* Cadastro e gerenciamento de **Centros de Treinamento**
-* Registro de **Alunos**
-* Criação de **Fichas de treino**
-* Cadastro de **Exercícios**
-* Associações entre ficha, exercício e aluno
+* Registro de **Alunos, Categorias e Centros de Treinamento**
 
 ## Exemplos de Endpoints
 
 Documentação completa e interativa disponível em `/docs`.
 
-* `GET /centros_treinamento`
+* `GET /atletas`
 * `POST /atletas`
-* `POST /centros_treinamento`
+* `PATCH /atletas`
+* `DELETE /atletas`
 * `GET /categorias`
 * `POST /categorias`
-
+* `PATCH /categorias`
+* `DELETE /categorias`
+* `GET /centros_treinamento`
+* `POST /centros_treinamento`
+* `PATCH /centros_treinamento`
+* `DELETE /centros_treinamento`
