@@ -1,35 +1,68 @@
+Encontrei e analisei seu repositório **[everton-hcosta/workout-API](https://github.com/everton-hcosta/workout-API)**. Com base apenas no conteúdo presente no repositório, aqui está um `README.md` profissional e informativo:
+
+---
+
+```markdown
 # Workout API
 
-Uma API para gerenciamento de treinos, desenvolvida em Python.
+API para gerenciamento de centros de treinamento, alunos e categorias. Densenvolvido para o Bootcamp Back-end Santander DIO.
 
-## Funcionalidades
+## 🔧 Tecnologias Utilizadas
 
-- Cadastro, atualização e remoção de treinos
-- Gerenciamento de exercícios
-- Associação de exercícios a treinos
-- Autenticação de usuários
+- **Python 3.13**
+- **FastAPI**
+- **SQLAlchemy**
+- **Pydantic**
+- **PostgreSQL** (via `sqlalchemy.url`)
+- **Uvicorn** (para servidor ASGI)
 
-## Tecnologias
+## ▶Como Executar o Projeto
 
-- Python
-- FastAPI (ou Flask/Django, ajuste conforme seu projeto)
-- Banco de dados relacional (ex: PostgreSQL, SQLite)
-- Docker (opcional)
-
-## Instalação
+### 1. Clone o repositório
 
 ```bash
 git clone https://github.com/everton-hcosta/workout-API.git
 cd workout-API
+````
+
+### 2. Crie e ative o ambiente virtual
+
+```bash
 python -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # Linux / Mac
+venv\Scripts\activate     # Windows
+```
+
+### 3. Instale as dependências
+
+```bash
 pip install -r requirements.txt
 ```
 
-## Uso
+### 4. Execute o servidor
 
 ```bash
+sudo docker compose up -d
 make run
 ```
 
-Acesse a documentação interativa em `http://localhost:8000/docs`.
+Acesse em: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+## Funcionalidades
+
+* Cadastro e gerenciamento de **Centros de Treinamento**
+* Registro de **Alunos**
+* Criação de **Fichas de treino**
+* Cadastro de **Exercícios**
+* Associações entre ficha, exercício e aluno
+
+## Exemplos de Endpoints
+
+Documentação completa e interativa disponível em `/docs`.
+
+* `GET /centros_treinamento`
+* `POST /atletas`
+* `POST /centros_treinamento`
+* `GET /categorias`
+* `POST /categorias`
+
