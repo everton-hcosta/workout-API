@@ -7,7 +7,7 @@ Encontrei e analisei seu repositório **[everton-hcosta/workout-API](https://git
 
 API para gerenciamento de centros de treinamento, alunos e categorias. Densenvolvido para o Bootcamp Back-end Santander DIO.
 
-## 🔧 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **Python 3.13**
 - **FastAPI**
