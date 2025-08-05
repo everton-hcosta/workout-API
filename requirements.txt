@@ -5,6 +5,7 @@ asyncpg==0.30.0
 click==8.2.1
 Faker==37.4.2
 fastapi==0.116.1
+fastapi-pagination==0.13.3
 greenlet==3.2.3
 h11==0.16.0
 idna==3.10
