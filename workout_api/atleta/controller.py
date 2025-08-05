@@ -2,6 +2,8 @@ from datetime import datetime, timezone
 from uuid import uuid4
 
 from fastapi import APIRouter, Body, HTTPException, Query, status
+from fastapi_pagination import Page, Params, add_pagination
+from fastapi_pagination.ext.sqlalchemy import paginate as sqlalchemy_paginate
 from pydantic import UUID4
 from sqlalchemy import func
 from sqlalchemy.future import select
@@ -81,35 +83,56 @@ async def post(db_session: DatabaseDependency, atleta_in: AtletaIn = Body(...)):
     path="/",
     summary="Consultar todos os atletas",
     status_code=status.HTTP_200_OK,
+<<<<<<< HEAD
     response_model=list[AtletaOut],
+=======
+    response_model=Page[FichaResumidaAtletaOut],
+>>>>>>> b37bbe4 (:construction: Adiciona suporte à paginação nas rotas de atletas, categorias e centros de treinamento, removendo a implementação anterior de resposta paginada.)
 )
 async def query(
     db_session: DatabaseDependency,
+    offset: int = Query(0, ge=0, description="Posição inicial (offset)"),
+    limit: int = Query(50, ge=1, le=100, description="Limite de itens por página"),
     nome: str | None = Query(default=None, description="Filtrar pelo nome"),
     cpf: str | None = Query(default=None, description="Filtrar pelo CPF"),
-    limit: int = Query(default=100, ge=1, le=1000, description="Limite de resultados"),
-    offset: int = Query(default=0, ge=0, description="Deslocamento para paginação"),
-) -> list[AtletaOut]:
-    stmt = select(AtletaModel)
+) -> Page[AtletaOut]:
+    stmt = select(AtletaModel).order_by(AtletaModel.nome)
 
     if nome:
-        stmt = stmt.where(func.unaccent(AtletaModel.nome).ilike(f"%{nome}%"))
+        stmt = stmt = stmt.where(
+            func.unaccent(AtletaModel.nome).ilike(func.unaccent(f"%{nome}%"))
+        )
     if cpf:
         cpf = cpf.replace(".", "").replace("-", "")
         stmt = stmt.where(AtletaModel.cpf.ilike(f"%{cpf}%"))
 
+<<<<<<< HEAD
     stmt = stmt.offset(offset).limit(limit).order_by(AtletaModel.nome)
 
     result = await db_session.execute(stmt)
     atletas = result.scalars().all()
 
     if not atletas:
+=======
+    atleta = await sqlalchemy_paginate(
+        db_session, stmt, params=Params(offset=offset, limit=limit)
+    )
+
+    if not atleta.items:
+>>>>>>> b37bbe4 (:construction: Adiciona suporte à paginação nas rotas de atletas, categorias e centros de treinamento, removendo a implementação anterior de resposta paginada.)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Nenhum atleta encontrado.",
         )
 
+<<<<<<< HEAD
     return [AtletaOut.model_validate(atleta) for atleta in atletas]
+=======
+    return atleta
+
+
+add_pagination(router)
+>>>>>>> b37bbe4 (:construction: Adiciona suporte à paginação nas rotas de atletas, categorias e centros de treinamento, removendo a implementação anterior de resposta paginada.)
 
 
 @router.get(
