@@ -34,7 +34,14 @@ venv\Scripts\activate     # Windows
 pip install -r requirements.txt
 ```
 
-### 4. Execute o servidor
+### 4. Configure o banco de dados
+
+```bash
+make create-migrations d="nome_da_migration"
+make run-migrations
+```
+
+### 5. Execute o servidor
 
 ```bash
 sudo docker compose up -d
