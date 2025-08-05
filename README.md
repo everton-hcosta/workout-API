@@ -1,8 +1,3 @@
-Encontrei e analisei seu repositório **[everton-hcosta/workout-API](https://github.com/everton-hcosta/workout-API)**. Com base apenas no conteúdo presente no repositório, aqui está um `README.md` profissional e informativo:
-
----
-
-```markdown
 # Workout API
 
 API para gerenciamento de centros de treinamento, alunos e categorias. Densenvolvido para o Bootcamp Back-end Santander DIO.
@@ -16,7 +11,7 @@ API para gerenciamento de centros de treinamento, alunos e categorias. Densenvol
 - **PostgreSQL** (via `sqlalchemy.url`)
 - **Uvicorn** (para servidor ASGI)
 
-## ▶Como Executar o Projeto
+## Como Executar o Projeto
 
 ### 1. Clone o repositório
 
