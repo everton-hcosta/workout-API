@@ -23,7 +23,7 @@ API para gerenciamento de centros de treinamento, alunos e categorias. Densenvol
 ```bash
 git clone https://github.com/everton-hcosta/workout-API.git
 cd workout-API
-````
+```
 
 ### 2. Crie e ative o ambiente virtual
 
